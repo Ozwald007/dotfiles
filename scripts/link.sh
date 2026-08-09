@@ -1,4 +1,5 @@
 # !/bin/sh
+set -eu
 
 dotfiles_root=$(cd $(dirname $0)/.. && pwd)
 
@@ -13,12 +14,12 @@ __remove_linklist_comment() {(
 # シンボリックリンクを作成
 cd ${dotfiles_root}/dotfiles
 linklist="linklist.txt"
-[ ! -r "$linklist" ] && return
+[ ! -r "$linklist" ] && exit 1
 __remove_linklist_comment "$linklist" | while read target link; do
     # ~ や環境変数を展開
     target=$(eval echo "${PWD}/${target}")
     link=$(eval echo "${link}")
     # シンボリックリンクを作成
-    mkdir -p $(dirname ${link})
-    ln -fsn ${target} ${link}
+    mkdir -p "$(dirname "${link}")"
+    ln -fsn "$target" "$link"
 done
