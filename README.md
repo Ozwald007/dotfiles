@@ -12,32 +12,51 @@
 
 ## シンボリックリンクの管理
 
-dotfiles の展開には、多くの環境で利用可能なシェルスクリプトを使用します。
+dotfiles の展開には、シェルスクリプトを使用します。
 
-また、冪等性を意識して実装し、展開先を定義した `linklist.txt` を用意することで、各 dotfile の配置先を管理します。
+冪等性を意識して実装し、展開先を定義した `linklist.txt` を用意することで、各 dotfile の配置先を管理します。
 
 ## ディレクトリ構成
 
 ```text
 repository-root
 ├── .git
-├── .vimrc -> ~/dotfiles/.vimrc
-├── .zshrc -> ~/dotfiles/.zshrc
 ├── dotfiles
 │   ├── .vimrc
 │   ├── .zshrc
 │   └── linklist.txt
 └── scripts
+    ├── install.sh
     └── link.sh
 ```
 
-## 利用方法
+## セットアップ
+
+新しい環境では以下の手順でセットアップを行います。
 
 ```sh
-git clone <repository-url> ~/dotfiles
-cd ~/dotfiles
+./scripts/install.sh
 ./scripts/link.sh
 ```
+
+### install.sh
+
+`install.sh` は開発環境の初期セットアップを行います。
+
+実行内容:
+
+1. Homebrew のインストール
+2. Homebrew の環境設定
+3. zsh のインストール（macOS 標準の zsh を使用するためコメントアウト）
+4. Vim のインストール（macOS 標準の Vim を使用するためコメントアウト）
+5. ログインシェルを zsh に変更
+6. dein.vim のインストール
+
+既に導入済みのソフトウェアについては、再インストールを行いません。
+
+### link.sh
+
+`link.sh` は `linklist.txt` を参照し、dotfiles のシンボリックリンクを作成します。
 
 実行後、`linklist.txt` に定義された内容に従ってシンボリックリンクが作成されます。
 
@@ -56,8 +75,19 @@ cd ~/dotfiles
 
 以下のような機密情報は管理対象に含めません。
 
-- SSH鍵 (`~/.ssh`)
-- クラウド認証情報 (`~/.aws` など)
+- SSH 鍵（`~/.ssh`）
+- クラウド認証情報（`~/.aws` など）
 - パスワードやトークンを含むファイル
 
 また、履歴ファイルやキャッシュファイルは管理対象外とします。
+
+## 動作環境
+
+動作確認環境:
+
+- macOS（Apple Silicon）
+- Homebrew
+
+`install.sh` は Apple Silicon Mac の Homebrew を利用してパッケージをインストールします。
+
+Homebrew は `/opt/homebrew` にインストールされることを前提としています。
